@@ -38,10 +38,7 @@ class Board
   def add_guess(new_guess, guess_number); end
 
   def compare_guess(guess)
-    compare_array = []
     black_peg_matches = []
-    wh_arr_sorted_pairs = []
-    wh_solution_pairs = []
 
     # Find the black pegs first - number by number comparison, store matching
     # pairs in a new array - black_peg_matches. Number of black pegs stored in
