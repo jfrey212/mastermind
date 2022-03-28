@@ -22,28 +22,32 @@ class Board
     puts "\tMASTERMIND"
     puts
     @guesses.each_with_index do |guess, i|
-      puts "\t#{guess}\t#{@pegs[i]}"
+      puts "\t#{i + 1}\t#{guess}\t#{@pegs[i]}"
       puts
     end
     if @game_over == true
-      puts "\t#{@secret_code}"
+      puts "\tCode:\t#{@secret_code}"
     else
-      puts "\tXXXX"
+      puts "\tCode:\tXXXX"
     end
     puts
     puts '1 = Blue, 2 = Red, 3 = Yellow, 4 = Green, 5 = White, 6 = Black'
     puts 'BP = Black Peg, WP = White Peg'
   end
 
-  def add_guess(new_guess, guess_number); end
+  def add_guess(new_guess, guess_number = 1)
+    peg = compare_guess(new_guess)
+    @guesses[guess_number - 1] = new_guess
+    @pegs[guess_number - 1] = "#{peg[0]}x BP : #{peg[1]}x WP"
+  end
 
   def compare_guess(guess)
     black_peg_matches = []
 
     # Find the black pegs first - number by number comparison, store matching
     # pairs in a new array - black_peg_matches. Number of black pegs stored in
-    # num_black_pegs. I refactored the compare_array to use zip instead of
-    # each_with_index
+    # num_black_pegs. I refactored the compare_array generation to use zip instead of
+    # each_with_index after some research online
     compare_array = guess.digits.reverse.zip(@secret_code.digits.reverse)
 
     compare_array.each do |pair|
@@ -65,18 +69,20 @@ class Board
         num_white_pegs += 1
       end
     end
-
-    puts "Number of black pegs is #{num_black_pegs}"
-    puts "Number of white pegs is #{num_white_pegs}"
+    [num_black_pegs, num_white_pegs]
   end
 end
 
 # Methods for the human player
 class HumanPlayer
-  def initialize; end
+  def initialize(name = 'Player')
+    @name = name
+  end
 end
 
 # Methods for the computer player
 class ComputerPlayer
-  def initialize; end
+  def initialize(name = 'Computer')
+    @name = name
+  end
 end
