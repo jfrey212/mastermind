@@ -97,7 +97,7 @@ class HumanPlayer
   def initialize
     @score = 0
   end
-  attribute_accessor :score
+  attr_accessor :score
 end
 
 # Methods for the computer player
