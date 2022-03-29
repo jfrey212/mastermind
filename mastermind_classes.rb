@@ -3,23 +3,26 @@
 # Classes for the mastermind game
 
 # Methods for running a game
-class Game
-  def initialize
-    @turn = 1
-    @game = 1
-    @game_over = false
+class Message
+  def options
+    print "Select an game option:\n"
+    print "1. Player vs Player\n"
+    print "2. vs Computer (Choose the Code)\n"
+    print "3. vs Computer (Guess the Code)\n"
+    print "4. Computer vs Computer\n"
+    print "q to quit\n\n"
+    print 'Selection: '
+    puts
   end
 
-  def next_turn
-    @turn += 1
+  def color_key
+    puts '1 = Blue, 2 = Red, 3 = Yellow, 4 = Green, 5 = White, 6 = Black'
   end
 
-  def game_over
-    @game_over = true
-  end
-
-  def next_game
-    @game += 1
+  def input_error
+    puts 'Invalid input, please choose again'
+    puts 'Press any key to continue'
+    gets
   end
 end
 
@@ -28,17 +31,15 @@ class Board
   def initialize(secret_code)
     @secret_code = secret_code
     @game_over = false
-    @turn = 1
-    @game = 1
+    @guess_count = 1
     @guesses = %w[0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000]
     @pegs = ['', '', '', '', '', '', '', '', '', '', '', '']
   end
-  attr_writer :guesses, :game_over, :turn, :game
+  attr_accessor :guesses, :game_over, :guess_count
 
   def display
     system('clear')
     puts "\tMASTERMIND"
-    puts "\tGame: #{@game}\tTurn: #{@turn}"
     puts
     @guesses.each_with_index do |guess, i|
       puts "\t#{i + 1}\t#{guess}\t#{@pegs[i]}"
@@ -54,10 +55,11 @@ class Board
     puts 'BP = Black Peg, WP = White Peg'
   end
 
-  def add_guess(new_guess, guess_number = 1)
+  def add_guess(new_guess)
     peg = compare_guess(new_guess)
-    @guesses[guess_number - 1] = new_guess
-    @pegs[guess_number - 1] = "#{peg[0]}x BP : #{peg[1]}x WP"
+    @guesses[@guess_count - 1] = new_guess
+    @pegs[@guess_count - 1] = "#{peg[0]}x BP : #{peg[1]}x WP"
+    @guess_count += 1
   end
 
   def compare_guess(guess)
@@ -90,25 +92,12 @@ class Board
     end
     [num_black_pegs, num_white_pegs]
   end
-end
 
-# Methods for the human player
-class HumanPlayer
-  def initialize
-    @score = 0
-  end
-  attr_accessor :score
-end
-
-# Methods for the computer player
-class ComputerPlayer
-  def initialize
-    @score = 0
-  end
-
-  attr_accessor :score
-
-  def choose_code
-    code = [rand(1..6), rand(1..6), rand(1..6), rand(1..6)].join('').to_i
+  def finish_check(num_black_pegs)
+    if num_black_pegs == 4
+      @game_over = true
+    elsif @turn > 12
+      @game_over = true
+    end
   end
 end
