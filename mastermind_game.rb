@@ -26,7 +26,7 @@ loop do
   if answer =~ /[1234q]/
     case answer
     when '1'
-      PlayerVsPlayer::pvp_game
+      PlayerVsPlayer :pvp_game
     when '2'
       system('clear')
       player1 = ComputerPlayer.new
