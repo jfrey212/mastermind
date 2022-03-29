@@ -4,7 +4,23 @@
 
 # Methods for running a game
 class Game
-  def initialize; end
+  def initialize
+    @turn = 1
+    @game = 1
+    @game_over = false
+  end
+
+  def next_turn
+    @turn += 1
+  end
+
+  def game_over
+    @game_over = true
+  end
+
+  def next_game
+    @game += 1
+  end
 end
 
 # Methods controlling the board
@@ -12,14 +28,17 @@ class Board
   def initialize(secret_code)
     @secret_code = secret_code
     @game_over = false
+    @turn = 1
+    @game = 1
     @guesses = %w[0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000]
     @pegs = ['', '', '', '', '', '', '', '', '', '', '', '']
   end
-  attr_accessor :guesses, :pegs, :game_over
+  attr_writer :guesses, :game_over, :turn, :game
 
   def display
     system('clear')
     puts "\tMASTERMIND"
+    puts "\tGame: #{@game}\tTurn: #{@turn}"
     puts
     @guesses.each_with_index do |guess, i|
       puts "\t#{i + 1}\t#{guess}\t#{@pegs[i]}"
@@ -75,14 +94,21 @@ end
 
 # Methods for the human player
 class HumanPlayer
-  def initialize(name = 'Player')
-    @name = name
+  def initialize
+    @score = 0
   end
+  attribute_accessor :score
 end
 
 # Methods for the computer player
 class ComputerPlayer
-  def initialize(name = 'Computer')
-    @name = name
+  def initialize
+    @score = 0
+  end
+
+  attr_accessor :score
+
+  def choose_code
+    code = [rand(1..6), rand(1..6), rand(1..6), rand(1..6)].join('').to_i
   end
 end
