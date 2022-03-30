@@ -20,7 +20,7 @@ loop do
     case answer
     when '1'
       system('clear')
-      puts '1 = Blue, 2 = Red, 3 = Yellow, 4 = Green, 5 = White, 6 = Black'
+      message.color_key
       print 'Player2 choose a secret 4-digit color code: '
       code = gets.chomp
       if code =~ /\b[1-6]{4}\b/

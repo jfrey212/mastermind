@@ -101,3 +101,58 @@ class Board
     end
   end
 end
+
+# Class contains methods for implementing Knuth's mastermind algorithm
+class Computer
+  def create_array
+    max = 6666
+    combo = 1111
+    array = []
+
+    while combo <= max
+      array << digit.to_s
+      combo += 1
+    end
+    array = array.select { |num| num =~ /[1-6][1-6][1-6][1-6]/ }
+    s = array.map(&:to_i)
+  end
+
+  def compare(guess, code)
+    black_peg_matches = []
+
+    # Find the black pegs first - number by number comparison, store matching
+    # pairs in a new array - black_peg_matches. Number of black pegs stored in
+    # num_black_pegs. I refactored the compare_array generation to use zip instead of
+    # each_with_index after some research online
+    compare_array = guess.digits.reverse.zip(code.digits.reverse)
+
+    compare_array.each do |pair|
+      next unless pair[0] == pair[1]
+
+      black_peg_matches << pair
+    end
+    num_black_pegs = black_peg_matches.length
+
+    # Find the white pegs. First remove the black peg matches. Only need a count
+    # here.
+    num_white_pegs = 0
+    white_peg_array = (compare_array | black_peg_matches) - (compare_array & black_peg_matches)
+    wh_arr_guess = white_peg_array.map { |pair| pair[0] }
+    wh_arr_code = white_peg_array.map { |pair| pair[1] }
+    wh_arr_guess.each do |digit|
+      if wh_arr_code.include?(digit)
+        wh_arr_code.delete_at(wh_arr_code.find_index(digit))
+        num_white_pegs += 1
+      end
+    end
+    [num_black_pegs, num_white_pegs]
+  end
+
+  def table
+    { [0, 0] => 0, [0, 1] => 0, [0, 2] => 0, [0, 3] => 0, [0, 4] => 0,
+      [1, 0] => 0, [1, 1] => 1, [1, 2] => 0, [1, 3] => 0,
+      [2, 0] => 0, [2, 1] => 0, [2, 2] => 0,
+      [3, 0] => 0,
+      [4, 0] => 0 }
+  end
+end
