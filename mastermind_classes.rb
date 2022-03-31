@@ -65,26 +65,25 @@ class Board
 
   def compare_guess(guess)
     black_peg_matches = []
+    num_black_pegs = 0
+    num_white_pegs = 0
 
-    # Find the black pegs first - number by number comparison, store matching
-    # pairs in a new array - black_peg_matches. Number of black pegs stored in
-    # num_black_pegs. I refactored the compare_array generation to use zip instead of
-    # each_with_index after some research online
     compare_array = guess.digits.reverse.zip(@secret_code.digits.reverse)
 
     compare_array.each do |pair|
       next unless pair[0] == pair[1]
 
+      num_black_pegs += 1
+
       black_peg_matches << pair
     end
-    num_black_pegs = black_peg_matches.length
+    black_peg_matches.each do |pair|
+      compare_array.delete_at(compare_array.find_index(pair))
+    end
 
-    # Find the white pegs. First remove the black peg matches. Only need a count
-    # here.
-    num_white_pegs = 0
-    white_peg_array = (compare_array | black_peg_matches) - (compare_array & black_peg_matches)
-    wh_arr_guess = white_peg_array.map { |pair| pair[0] }
-    wh_arr_code = white_peg_array.map { |pair| pair[1] }
+    wh_arr_guess = compare_array.map { |pair| pair[0] }
+    wh_arr_code = compare_array.map { |pair| pair[1] }
+
     wh_arr_guess.each do |digit|
       if wh_arr_code.include?(digit)
         wh_arr_code.delete_at(wh_arr_code.find_index(digit))
@@ -94,3 +93,8 @@ class Board
     [num_black_pegs, num_white_pegs]
   end
 end
+
+# Due to needing the compare method for the minimax procedure, I ended up with
+# two compare methods, one in the Board class and one in the minimax file.
+# The one in the Board method is coupled to other class methods so I can't
+# refactor to one compare method without substantial re-writes.

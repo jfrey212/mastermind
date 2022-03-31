@@ -27,7 +27,6 @@ def compare(guess, code)
   num_white_pegs = 0
 
   compare_array = guess.digits.reverse.zip(code.digits.reverse)
-  p compare_array
 
   compare_array.each do |pair|
     next unless pair[0] == pair[1]
