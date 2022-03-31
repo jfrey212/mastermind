@@ -58,8 +58,8 @@ class Board
 
   def add_guess(new_guess)
     peg = compare_guess(new_guess)
-    @guesses[@guess_count - 1] = new_guess
-    @pegs[@guess_count - 1] = "#{peg[0]}x BP : #{peg[1]}x WP"
+    @guesses[@guess_count] = new_guess
+    @pegs[@guess_count] = "#{peg[0]}x BP : #{peg[1]}x WP"
     @guess_count += 1
   end
 

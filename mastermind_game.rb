@@ -51,7 +51,7 @@ loop do
         end
         board.add_guess(guess)
         black_pegs = board.compare_guess(guess)[0]
-        if board.guess_count == 11 && black_pegs < 4
+        if board.guess_count == 10 && black_pegs < 4
           board.game_over = true
           board.display
           puts "\nPlayer2 Wins - You didn't guess the code"
@@ -71,15 +71,54 @@ loop do
       system('clear')
       message.color_key
       print 'Player choose a secret 4-digit color code: '
-      code = gets.chomp
-      if code =~ /\b[1-6]{4}\b/
-        code = code.to_i
+      secret_code = gets.chomp
+      guess = 1122
+      if secret_code =~ /\b[1-6]{4}\b/
+        secret_code = secret_code.to_i
       else
         message.input_error
         next
       end
-      board = Board.new(code)
-      board.display
+
+      unused_codes = create_codes
+      potential_codes = Set.new(unused_codes)
+      board = Board.new(secret_code)
+
+      loop do
+        board.add_guess(guess)
+        board.display
+        score = compare(guess, secret_code)
+
+        if score == [4,0]
+          board.game_over = true
+          board.display
+          puts "\nThe computer found the secret code in #{board.guess_count} turns"
+          break
+        elsif board.guess_count == 10
+          board.game_over = true
+          board.display
+          puts "\nThe computer did not find the secret code"
+          break
+        end
+
+        unused_codes.reject! { |code| code == guess }
+        potential_codes.select! { |code| compare(code, guess) == score}
+
+        possible_guesses = unused_codes.map do |possible_guess|
+          hit_counts = potential_codes.each_with_object(Hash.new(0)) do |potential_code, counts|
+            counts[compare(potential_code, possible_guess)] += 1
+          end
+
+          highest_hit_count = hit_counts.values.max || 0
+
+          membership_value = potential_codes.include?(possible_guess) ? 0 : 1
+
+          [highest_hit_count, membership_value,  possible_guess]
+        end
+
+        guess = possible_guesses.min.last
+        sleep(1)
+      end
     when '3'
       system('clear')
       code = [rand(1..6), rand(1..6), rand(1..6), rand(1..6)].join('').to_i
@@ -101,7 +140,7 @@ loop do
         end
         board.add_guess(guess)
         black_pegs = board.compare_guess(guess)[0]
-        if board.guess_count == 11 && black_pegs < 4
+        if board.guess_count == 10 && black_pegs < 4
           board.game_over = true
           board.display
           puts "\nComputer Wins - You didn't guess the code"
@@ -143,7 +182,7 @@ loop do
           board.display
           puts "\nThe computer found the secret code in #{board.guess_count} turns"
           break
-        elsif board.guess_count == 11
+        elsif board.guess_count == 10
           board.game_over = true
           board.display
           puts "\nThe computer did not find the secret code"
