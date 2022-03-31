@@ -9,7 +9,7 @@
 
 require './mastermind_classes'
 require './minimax'
-require "set"
+require 'set'
 
 # Introduction
 system('clear')
@@ -29,14 +29,14 @@ loop do
       system('clear')
       message.color_key
       print 'Player2 choose a secret 4-digit color code: '
-      code = gets.chomp
-      if code =~ /\b[1-6]{4}\b/
-        code = code.to_i
+      secret_code = gets.chomp
+      if secret_code =~ /\b[1-6]{4}\b/
+        secret_code = secret_code.to_i
       else
         message.input_error
         next
       end
-      board = Board.new(code)
+      board = Board.new(secret_code)
 
       loop do
         board.display
@@ -89,7 +89,7 @@ loop do
         board.display
         score = compare(guess, secret_code)
 
-        if score == [4,0]
+        if score == [4, 0]
           board.game_over = true
           board.display
           puts "\nThe computer found the secret code in #{board.guess_count} turns"
@@ -102,7 +102,7 @@ loop do
         end
 
         unused_codes.reject! { |code| code == guess }
-        potential_codes.select! { |code| compare(code, guess) == score}
+        potential_codes.select! { |code| compare(code, guess) == score }
 
         possible_guesses = unused_codes.map do |possible_guess|
           hit_counts = potential_codes.each_with_object(Hash.new(0)) do |potential_code, counts|
@@ -113,7 +113,7 @@ loop do
 
           membership_value = potential_codes.include?(possible_guess) ? 0 : 1
 
-          [highest_hit_count, membership_value,  possible_guess]
+          [highest_hit_count, membership_value, possible_guess]
         end
 
         guess = possible_guesses.min.last
@@ -121,11 +121,11 @@ loop do
       end
     when '3'
       system('clear')
-      code = [rand(1..6), rand(1..6), rand(1..6), rand(1..6)].join('').to_i
+      secret_code = [rand(1..6), rand(1..6), rand(1..6), rand(1..6)].join('').to_i
       puts 'The computer has chosen a 4-digit color code'
       puts 'Press enter to begin'
       gets
-      board = Board.new(code)
+      board = Board.new(secret_code)
 
       loop do
         board.display
@@ -177,7 +177,7 @@ loop do
         board.display
         score = compare(guess, secret_code)
 
-        if score == [4,0]
+        if score == [4, 0]
           board.game_over = true
           board.display
           puts "\nThe computer found the secret code in #{board.guess_count} turns"
@@ -192,7 +192,7 @@ loop do
         # Remove the guess from the total code list and remove all scores from
         # S that have different peg scores from the guess
         unused_codes.reject! { |code| code == guess }
-        potential_codes.select! { |code| compare(code, guess) == score}
+        potential_codes.select! { |code| compare(code, guess) == score }
 
         # This is the minimax step. Each possible guess in the list of all
         # guesses is compared with each code in the potential code list S.
@@ -215,7 +215,7 @@ loop do
 
           membership_value = potential_codes.include?(possible_guess) ? 0 : 1
 
-          [highest_hit_count, membership_value,  possible_guess]
+          [highest_hit_count, membership_value, possible_guess]
         end
 
         guess = possible_guesses.min.last
