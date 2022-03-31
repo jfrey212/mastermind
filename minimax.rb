@@ -3,9 +3,6 @@
 # Implementation of Knuth mastermind algorithm
 
 # Create an array of 1296 codes 1111..6666
-
-require 'pry-byebug'
-
 def create_codes
   max = 6666
   combo = 1111
