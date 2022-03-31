@@ -31,11 +31,12 @@ class Board
   def initialize(secret_code)
     @secret_code = secret_code
     @game_over = false
-    @guess_count = 1
-    @guesses = %w[0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000]
-    @pegs = ['', '', '', '', '', '', '', '', '', '', '', '']
+    @guess_count = 0
+    @guesses = %w[0000 0000 0000 0000 0000 0000 0000 0000 0000 0000]
+    @pegs = ['', '', '', '', '', '', '', '', '', '']
   end
   attr_accessor :guesses, :game_over, :guess_count
+  attr_reader :secret_code
 
   def display
     system('clear')
@@ -91,13 +92,5 @@ class Board
       end
     end
     [num_black_pegs, num_white_pegs]
-  end
-
-  def finish_check(num_black_pegs)
-    if num_black_pegs == 4
-      @game_over = true
-    elsif @turn > 12
-      @game_over = true
-    end
   end
 end
