@@ -190,17 +190,18 @@ loop do
         end
 
         # Remove the guess from the total code list and remove all scores from
-        # S that have different peg scores from the guess
+        # S that have different peg scores from the guess. I'm using S to refer to
+        # potential_codes because the algorithm description uses S for this list
         unused_codes.reject! { |code| code == guess }
         potential_codes.select! { |code| compare(code, guess) == score }
 
         # This is the minimax step. Each possible guess in the list of all
-        # guesses is compared with each code in the potential code list S.
+        # guesses (unused_codes) is compared with each code in the potential_code list (S).
         # These comparisons populate a hash called hit_counts with the number of
         # each possible peg score. The highest score in this list represents the
         # worst case scenario for that guess - the most unknowns. The membership_value
         # represents whether a given guess is present in the possible_guess list
-        # S. The min test at the end finds the possible guess with the lowest
+        # (S). The min test at the end finds the possible guess with the lowest
         # max hit count. The membership_value selects a value in the possible
         # guess list S if available. If two or more value have the same highest
         # hit count and membership_value, the lowest numerical value is used to select
